@@ -1,0 +1,29 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: gnocchi
+  profiles:
+    active: dev
+  jpa:
+    hibernate:
+      ddl-auto: update
+      database-platform: org.hibernate.dialect.MySQLDialect
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+  session:
+    store-type: jdbc
+logging:
+  level:
+    sql: debug
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
+  metrics:
+    tags:
+      application: ${spring.application.name}

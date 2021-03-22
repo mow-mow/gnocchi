@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/globalnavi::meta_header('ダッシュボード',~{::link},~{::script})">
+</head>
+<body class="bg-light">
+<div th:replace="common/globalnavi::globalnavi"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/globalnavi::sidebar"></div>
+        <main class="col-md-9 col-lg-10 px-4 bg-light">
+            <div class="container">
+
+
+                <div role="main" 　class="col-10 col-md-8 offset-md-2 py-2">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center my-3">
+                        <h2 class="h5 text-secondary">ダッシュボード</h2>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center card-title">
+                                <h3 class="h5 text-secondary"><i class="bi bi-text-left"></i>Your Oarai Gourmet</h3>
+                                <div class="btn-toolbar mb-2 mb-md-0">
+                                    <div class="btn-group mr-2">
+                                        <a class="btn btn-md btn-outline-secondary" th:href="@{/user/gourmets/new}">+
+                                            CREATE</a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="alert alert-success" role="alert" th:if="${registSuccusessFlag}">
+                                ありがとうございます！登録が完了しました！
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="alert alert-success" role="alert" th:if="${deleteSuccusessFlag}">
+                                削除完了しました！
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="alert alert-success" role="alert" th:if="${updateSuccusessFlag}">
+                                登録内容を修正しました！
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="album py-2">
+                                <div class="container">
+                                    <form th:action="@{/user/gourmets/}" th:method="delete">
+                                        <div class="row">
+
+
+                                            <div th:each="gourmet,stat : ${gourmets}" class="col-md-4">
+                                                <div class="card mb-4 box-shadow">
+                                                    <img class="card-img-top" src="http://placehold.jp/150x150.png"
+                                                         alt="Card image cap">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">
+                                                            <th:block th:text="${gourmet.menu}"></th:block>
+
+                                                            <span class="badge badge-secondary"
+                                                                  th:text="${gourmet.tweetCount}">
+                                                    </span>
+                                                            <span th:if="${gourmet.invalidFlag}">
+                                                        <i class="bi bi-eye-slash-fill"></i>
+                                                     </span>
+                                                        </h5>
+                                                        <h6 class="card-subtitle mb-2 text-muted"
+                                                            th:text="${gourmet.shopName}"></h6>
+                                                        <p class="card-text" th:text="${gourmet.comment}"></p>
+
+                                                        <ul class="list-group list-group-horizontal gourmet-ul">
+                                                            <li class="list-group-item">
+                                                                <i class="far fa-calendar-alt"></i>
+                                                                <small class="text-muted"
+                                                                       th:text="*{#temporals.format(gourmet.updateDate, 'yyyy/MM/dd HH:mm')}"></small>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                        <a class="text-muted"
+                                                           th:href="@{/user/{botId}/gourmets/{id}/edit(botId=${gourmet.botId},id=${gourmet.gourmetId})}"><i
+                                                                class="bi bi-pencil-square"></i></a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                        <a class="text-muted" data-toggle="modal"
+                                                           th:data-target="'#delete-modal-'+ ${stat.index}" href="#"><i
+                                                                class="bi bi-trash-fill"></i></a>
+                                                            </li>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal fade" th:id="'delete-modal-'+ ${stat.index}"
+                                                     tabindex="-1"
+                                                     role="dialog"
+                                                     th:aria-labelledby="'delete-modal-title-'+ ${stat.index}"
+                                                     aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title"
+                                                                    th:id="'delete-modal-title-'+ ${stat.index}"><i
+                                                                        class="bi bi-trash-fill"></i>データ削除</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                        aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body"
+                                                                 th:text="${gourmet.menu}+'を削除しますか？'">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-dismiss="modal">いいえ
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary"
+                                                                        th:formaction="@{/user/{botId}/gourmets/{id}(botId=${gourmet.botId},id=${gourmet.gourmetId})}">
+                                                                    はい
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>
